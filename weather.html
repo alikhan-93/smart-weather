@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Weather Monitoring System</title>
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #06101d;
+
+            color: #ffffff;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container {
+
+            width: 100%;
+
+            max-width: 1500px;
+
+            margin: auto;
+
+            padding: 35px 40px;
+
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+
+            gap: 30px;
+
+        }
+
+
+        .eyebrow {
+
+            color: #5da9ff;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        h1 {
+
+            font-size: 44px;
+
+            line-height: 1.1;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        h1 span {
+
+            color: #5da9ff;
+
+        }
+
+
+        .subtitle {
+
+            color: #8da2b7;
+
+            font-size: 15px;
+
+        }
+
+
+        /* =====================================================
+           CONNECTION STATUS
+        ===================================================== */
+
+        .connection-box {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 15px 20px;
+
+            min-width: 190px;
+
+            background: #0d1c2d;
+
+            border: 1px solid #29435f;
+
+            border-radius: 14px;
+
+        }
+
+
+        .status-dot {
+
+            width: 12px;
+
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: #ff4d5a;
+
+        }
+
+
+        .status-dot.online {
+
+            background: #35df96;
+
+            box-shadow:
+                0 0 15px
+                rgba(53, 223, 150, 0.7);
+
+        }
+
+
+        .status-text {
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .status-sub {
+
+            color: #71869b;
+
+            font-size: 11px;
+
+            margin-top: 4px;
+
+        }
+
+
+        /* =====================================================
+           SENSOR GRID
+        ===================================================== */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+
+            width: 100%;
+
+        }
+
+
+        /* =====================================================
+           SENSOR CARD
+        ===================================================== */
+
+        .card {
+
+            min-height: 250px;
+
+            padding: 25px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #10243a,
+                    #0b1726
+                );
+
+            border: 1px solid #28445f;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0, 0, 0, 0.25);
+
+            transition: 0.25s ease;
+
+        }
+
+
+        .card:hover {
+
+            transform:
+                translateY(-5px);
+
+            border-color:
+                #4c8ac0;
+
+        }
+
+
+        /* =====================================================
+           CARD HEADER
+        ===================================================== */
+
+        .card-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+        }
+
+
+        .card-label {
+
+            color: #7892aa;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .card h2 {
+
+            font-size: 19px;
+
+        }
+
+
+        .icon {
+
+            width: 50px;
+
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #17304a;
+
+            border-radius: 14px;
+
+            font-size: 23px;
+
+        }
+
+
+        /* =====================================================
+           BIG VALUES
+        ===================================================== */
+
+        .big-value {
+
+            font-size: 45px;
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+
+        }
+
+
+        .big-status {
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+        }
+
+
+        /* =====================================================
+           RAIN RAW VALUE
+        ===================================================== */
+
+        .sensor-value {
+
+            color: #8296aa;
+
+            font-size: 13px;
+
+        }
+
+
+        .sensor-value strong {
+
+            color: #ffffff;
+
+            font-size: 15px;
+
+        }
+
+
+        /* =====================================================
+           CARD FOOTER
+        ===================================================== */
+
+        .card-footer {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid #223b53;
+
+            color: #70859a;
+
+            font-size: 12px;
+
+        }
+
+
+        .live-indicator {
+
+            color: #35df96;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        /* =====================================================
+           ALERT
+        ===================================================== */
+
+        .alert-section {
+
+            margin-top: 22px;
+
+            padding: 25px;
+
+            background: #0d1c2d;
+
+            border: 1px solid #29435f;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+        .alert-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+        }
+
+
+        .alert-icon {
+
+            width: 60px;
+
+            height: 60px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                rgba(
+                    53,
+                    223,
+                    150,
+                    0.12
+                );
+
+            color: #35df96;
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+        }
+
+
+        .alert-icon.danger {
+
+            background:
+                rgba(
+                    255,
+                    77,
+                    90,
+                    0.15
+                );
+
+            color: #ff4d5a;
+
+        }
+
+
+        .alert-description {
+
+            color: #8195a8;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+
+        }
+
+
+        .buzzer-status {
+
+            text-align: right;
+
+        }
+
+
+        .buzzer-status span {
+
+            display: block;
+
+            color: #72879c;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        .buzzer-status strong {
+
+            display: block;
+
+            font-size: 20px;
+
+            margin-top: 5px;
+
+        }
+
+
+        /* =====================================================
+           INFO CARDS
+        ===================================================== */
+
+        .info-section {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-top: 22px;
+
+        }
+
+
+        .info-card {
+
+            padding: 20px;
+
+            background: #0d1c2d;
+
+            border:
+                1px solid #29435f;
+
+            border-radius: 16px;
+
+        }
+
+
+        .info-label {
+
+            color: #6d8298;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .info-card h3 {
+
+            font-size: 17px;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .info-card span {
+
+            color: #71869b;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            margin-top: 35px;
+
+            padding-top: 18px;
+
+            border-top:
+                1px solid #1d344b;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            color: #60768c;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .dashboard-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+            .info-section {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .container {
+
+                padding: 25px 18px;
+
+            }
+
+            .header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+            }
+
+            .connection-box {
+
+                width: 100%;
+
+            }
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .info-section {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .alert-section {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 20px;
+
+            }
+
+            .buzzer-status {
+
+                text-align: left;
+
+            }
+
+            footer {
+
+                flex-direction: column;
+
+                gap: 10px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+        <div>
+
+            <p class="eyebrow">
+                IoT MONITORING SYSTEM
+            </p>
+
+            <h1>
+                Smart Weather
+                <span>Monitoring</span>
+            </h1>
+
+            <p class="subtitle">
+                Real-time environmental monitoring
+                using ESP32 and IoT sensors.
+            </p>
+
+        </div>
+
+
+        <div class="connection-box">
+
+            <div
+                class="status-dot"
+                id="statusDot">
+            </div>
+
+            <div>
+
+                <div
+                    class="status-text"
+                    id="deviceStatus">
+                    OFFLINE
+                </div>
+
+                <div class="status-sub">
+                    ESP32 Device
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         SENSOR CARDS
+    ====================================================== -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- TEMPERATURE -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="card-label">
+                        TEMPERATURE
+                    </p>
+
+                    <h2>
+                        Environment
+                    </h2>
+
+                </div>
+
+                <div class="icon">
+                    🌡️
+                </div>
+
+            </div>
+
+
+            <div
+                class="big-value"
+                id="temperature">
+                -- °C
+            </div>
+
+
+            <div class="card-footer">
+
+                <span>
+                    DHT11 Sensor
+                </span>
+
+                <span class="live-indicator">
+                    LIVE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- HUMIDITY -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="card-label">
+                        HUMIDITY
+                    </p>
+
+                    <h2>
+                        Moisture Level
+                    </h2>
+
+                </div>
+
+                <div class="icon">
+                    💧
+                </div>
+
+            </div>
+
+
+            <div
+                class="big-value"
+                id="humidity">
+                -- %
+            </div>
+
+
+            <div class="card-footer">
+
+                <span>
+                    DHT11 Sensor
+                </span>
+
+                <span class="live-indicator">
+                    LIVE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- RAIN -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="card-label">
+                        RAIN STATUS
+                    </p>
+
+                    <h2>
+                        Precipitation
+                    </h2>
+
+                </div>
+
+                <div class="icon">
+                    🌧️
+                </div>
+
+            </div>
+
+
+            <div
+                class="big-status"
+                id="rain">
+                --
+            </div>
+
+
+            <div class="sensor-value">
+
+                Sensor Value:
+
+                <strong id="rainRaw">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="card-footer">
+
+                <span>
+                    Rain Sensor
+                </span>
+
+                <span class="live-indicator">
+                    LIVE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- GAS -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="card-label">
+                        AIR QUALITY
+                    </p>
+
+                    <h2>
+                        Gas / Smoke
+                    </h2>
+
+                </div>
+
+                <div class="icon">
+                    🫧
+                </div>
+
+            </div>
+
+
+            <div
+                class="big-status"
+                id="gas">
+                --
+            </div>
+
+
+            <div class="card-footer">
+
+                <span>
+                    MQ-135 Sensor
+                </span>
+
+                <span class="live-indicator">
+                    LIVE
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         ALERT
+    ====================================================== -->
+
+    <section class="alert-section">
+
+
+        <div class="alert-left">
+
+            <div
+                class="alert-icon"
+                id="alertIcon">
+
+                ✓
+
+            </div>
+
+
+            <div>
+
+                <p class="card-label">
+                    SYSTEM ALERT
+                </p>
+
+                <h2 id="alert">
+                    NORMAL
+                </h2>
+
+                <p
+                    class="alert-description"
+                    id="alertDescription">
+
+                    All monitored conditions
+                    are within normal status.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="buzzer-status">
+
+            <span>
+                BUZZER
+            </span>
+
+            <strong id="buzzer">
+                OFF
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         INFORMATION
+    ====================================================== -->
+
+    <section class="info-section">
+
+
+        <div class="info-card">
+
+            <p class="info-label">
+                DEVICE
+            </p>
+
+            <h3>
+                ESP32-U
+            </h3>
+
+            <span>
+                Smart Weather Controller
+            </span>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <p class="info-label">
+                CONNECTION
+            </p>
+
+            <h3>
+                Wi-Fi
+            </h3>
+
+            <span>
+                192.168.0.4
+            </span>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <p class="info-label">
+                API STATUS
+            </p>
+
+            <h3 id="apiStatus">
+                Waiting
+            </h3>
+
+            <span>
+                /api/sensors
+            </span>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <p class="info-label">
+                LAST UPDATE
+            </p>
+
+            <h3 id="lastUpdated">
+                Waiting...
+            </h3>
+
+            <span>
+                Automatic refresh
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <div>
+            SMART WEATHER MONITORING SYSTEM
+        </div>
+
+        <div>
+            ESP32 • IoT • REAL-TIME MONITORING
+        </div>
+
+    </footer>
+
+
+</div>
+
+
+<script>
+
+
+    // =====================================================
+    // ESP32 API
+    // =====================================================
+
+    const ESP32_URL =
+        " http://10.217.27.134/api/sensors";
+
+
+    // =====================================================
+    // ELEMENTS
+    // =====================================================
+
+    const temperature =
+        document.getElementById("temperature");
+
+    const humidity =
+        document.getElementById("humidity");
+
+    const rain =
+        document.getElementById("rain");
+
+    const rainRaw =
+        document.getElementById("rainRaw");
+
+    const gas =
+        document.getElementById("gas");
+
+    const alert =
+        document.getElementById("alert");
+
+    const alertIcon =
+        document.getElementById("alertIcon");
+
+    const alertDescription =
+        document.getElementById("alertDescription");
+
+    const buzzer =
+        document.getElementById("buzzer");
+
+    const deviceStatus =
+        document.getElementById("deviceStatus");
+
+    const statusDot =
+        document.getElementById("statusDot");
+
+    const apiStatus =
+        document.getElementById("apiStatus");
+
+    const lastUpdated =
+        document.getElementById("lastUpdated");
+
+
+    // =====================================================
+    // GET SENSOR DATA
+    // =====================================================
+
+    async function getSensorData() {
+
+        try {
+
+            const response =
+                await fetch(
+                    ESP32_URL,
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "ESP32 DATA:",
+                data
+            );
+
+
+            // =================================================
+            // TEMPERATURE
+            // =================================================
+
+            if (
+                data.temperature !== null &&
+                data.temperature !== undefined
+            ) {
+
+                temperature.textContent =
+                    Number(
+                        data.temperature
+                    ).toFixed(1) +
+                    " °C";
+
+            } else {
+
+                temperature.textContent =
+                    "-- °C";
+
+            }
+
+
+            // =================================================
+            // HUMIDITY
+            // =================================================
+
+            if (
+                data.humidity !== null &&
+                data.humidity !== undefined
+            ) {
+
+                humidity.textContent =
+                    Number(
+                        data.humidity
+                    ).toFixed(1) +
+                    " %";
+
+            } else {
+
+                humidity.textContent =
+                    "-- %";
+
+            }
+
+
+            // =================================================
+            // RAIN RAW VALUE
+            // =================================================
+
+            if (
+                data.rainValue !== undefined &&
+                data.rainValue !== null
+            ) {
+
+                rainRaw.textContent =
+                    data.rainValue;
+
+            } else {
+
+                rainRaw.textContent =
+                    "--";
+
+            }
+
+
+            // =================================================
+            // RAIN STATUS
+            // =================================================
+
+            if (data.rainDetected) {
+
+                rain.textContent =
+                    "RAIN DETECTED";
+
+            } else {
+
+                rain.textContent =
+                    "NO RAIN";
+
+            }
+
+
+            // =================================================
+            // GAS STATUS
+            // =================================================
+
+            if (data.gasDetected) {
+
+                gas.textContent =
+                    "GAS DETECTED";
+
+            } else {
+
+                gas.textContent =
+                    "NORMAL";
+
+            }
+
+
+            // =================================================
+            // BUZZER
+            // =================================================
+
+            if (data.buzzerOn) {
+
+                buzzer.textContent =
+                    "ON";
+
+            } else {
+
+                buzzer.textContent =
+                    "OFF";
+
+            }
+
+
+            // =================================================
+            // ALERT
+            // =================================================
+
+            if (data.buzzerOn) {
+
+                alert.textContent =
+                    "ACTIVE";
+
+                alertIcon.textContent =
+                    "!";
+
+                alertIcon.classList.add(
+                    "danger"
+                );
+
+                alertDescription.textContent =
+                    "Warning: rain or gas/smoke " +
+                    "condition detected.";
+
+            } else {
+
+                alert.textContent =
+                    "NORMAL";
+
+                alertIcon.textContent =
+                    "✓";
+
+                alertIcon.classList.remove(
+                    "danger"
+                );
+
+                alertDescription.textContent =
+                    "All monitored conditions " +
+                    "are within normal status.";
+
+            }
+
+
+            // =================================================
+            // DEVICE ONLINE
+            // =================================================
+
+            deviceStatus.textContent =
+                "ONLINE";
+
+            statusDot.classList.add(
+                "online"
+            );
+
+
+            // =================================================
+            // API STATUS
+            // =================================================
+
+            apiStatus.textContent =
+                "Connected";
+
+
+            // =================================================
+            // LAST UPDATE
+            // =================================================
+
+            lastUpdated.textContent =
+                new Date().toLocaleTimeString();
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "ESP32 CONNECTION ERROR:",
+                error
+            );
+
+
+            // =================================================
+            // DEVICE OFFLINE
+            // =================================================
+
+            deviceStatus.textContent =
+                "OFFLINE";
+
+            statusDot.classList.remove(
+                "online"
+            );
+
+
+            // =================================================
+            // API STATUS
+            // =================================================
+
+            apiStatus.textContent =
+                "Disconnected";
+
+
+            // =================================================
+            // CLEAR SENSOR VALUES
+            // =================================================
+
+            temperature.textContent =
+                "-- °C";
+
+            humidity.textContent =
+                "-- %";
+
+            rain.textContent =
+                "--";
+
+            rainRaw.textContent =
+                "--";
+
+            gas.textContent =
+                "--";
+
+
+            // =================================================
+            // ALERT
+            // =================================================
+
+            alert.textContent =
+                "OFFLINE";
+
+            alertIcon.textContent =
+                "!";
+
+            alertIcon.classList.add(
+                "danger"
+            );
+
+            alertDescription.textContent =
+                "Unable to communicate with ESP32.";
+
+
+            // =================================================
+            // BUZZER
+            // =================================================
+
+            buzzer.textContent =
+                "--";
+
+
+            // =================================================
+            // LAST UPDATE
+            // =================================================
+
+            lastUpdated.textContent =
+                "ESP32 Offline";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // INITIAL LOAD
+    // =====================================================
+
+    getSensorData();
+
+
+    // =====================================================
+    // AUTO REFRESH
+    // =====================================================
+
+    setInterval(
+        getSensorData,
+        2000
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
